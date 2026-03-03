@@ -1,7 +1,7 @@
 package com.wintermist.mbti.model.vo;
 
 import cn.hutool.json.JSONUtil;
-import com.wintermist.mbti.model.entity.Question;
+import com.wintermist.mbti.model.entity.App;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
@@ -10,12 +10,12 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 问题视图
+ * 应用视图
  *
 
  */
 @Data
-public class QuestionVO implements Serializable {
+public class AppVO implements Serializable {
 
     /**
      * id
@@ -60,33 +60,31 @@ public class QuestionVO implements Serializable {
     /**
      * 封装类转对象
      *
-     * @param questionVO
+     * @param appVO
      * @return
      */
-    public static Question voToObj(QuestionVO questionVO) {
-        if (questionVO == null) {
+    public static App voToObj(AppVO appVO) {
+        if (appVO == null) {
             return null;
         }
-        Question question = new Question();
-        BeanUtils.copyProperties(questionVO, question);
-        List<String> tagList = questionVO.getTagList();
-        question.setTags(JSONUtil.toJsonStr(tagList));
-        return question;
+        App app = new App();
+        BeanUtils.copyProperties(appVO, app);
+        List<String> tagList = appVO.getTagList();
+        return app;
     }
 
     /**
      * 对象转封装类
      *
-     * @param question
+     * @param app
      * @return
      */
-    public static QuestionVO objToVo(Question question) {
-        if (question == null) {
+    public static AppVO objToVo(App app) {
+        if (app == null) {
             return null;
         }
-        QuestionVO questionVO = new QuestionVO();
-        BeanUtils.copyProperties(question, questionVO);
-        questionVO.setTagList(JSONUtil.toList(question.getTags(), String.class));
-        return questionVO;
+        AppVO appVO = new AppVO();
+        BeanUtils.copyProperties(app, appVO);
+        return appVO;
     }
 }

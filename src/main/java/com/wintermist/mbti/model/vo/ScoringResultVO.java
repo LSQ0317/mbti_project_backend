@@ -70,7 +70,6 @@ public class ScoringResultVO implements Serializable {
         ScoringResult scoringResult = new ScoringResult();
         BeanUtils.copyProperties(scoringResultVO, scoringResult);
         List<String> tagList = scoringResultVO.getTagList();
-        scoringResult.setTags(JSONUtil.toJsonStr(tagList));
         return scoringResult;
     }
 
@@ -86,7 +85,6 @@ public class ScoringResultVO implements Serializable {
         }
         ScoringResultVO scoringResultVO = new ScoringResultVO();
         BeanUtils.copyProperties(scoringResult, scoringResultVO);
-        scoringResultVO.setTagList(JSONUtil.toList(scoringResult.getTags(), String.class));
         return scoringResultVO;
     }
 }

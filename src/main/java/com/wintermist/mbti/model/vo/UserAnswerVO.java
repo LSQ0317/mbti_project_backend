@@ -69,8 +69,6 @@ public class UserAnswerVO implements Serializable {
         }
         UserAnswer userAnswer = new UserAnswer();
         BeanUtils.copyProperties(userAnswerVO, userAnswer);
-        List<String> tagList = userAnswerVO.getTagList();
-        userAnswer.setTags(JSONUtil.toJsonStr(tagList));
         return userAnswer;
     }
 
@@ -85,8 +83,6 @@ public class UserAnswerVO implements Serializable {
             return null;
         }
         UserAnswerVO userAnswerVO = new UserAnswerVO();
-        BeanUtils.copyProperties(userAnswer, userAnswerVO);
-        userAnswerVO.setTagList(JSONUtil.toList(userAnswer.getTags(), String.class));
         return userAnswerVO;
     }
 }

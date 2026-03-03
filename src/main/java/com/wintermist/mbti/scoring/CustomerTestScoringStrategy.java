@@ -19,7 +19,8 @@ import java.util.Map;
 /**
  * 自定义测评类评分
  */
-public class CustomerTestScoringStrategy implements ScoringStrategyExecutor{
+@ScoringStrategyConfig(appType = 1, scoringStrategy = 0)
+public class CustomerTestScoringStrategy implements ScoringStrategy{
 
     @Resource
     private QuestionService questionService;

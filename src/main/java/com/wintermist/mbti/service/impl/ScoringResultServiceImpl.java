@@ -53,35 +53,37 @@ public class ScoringResultServiceImpl extends ServiceImpl<ScoringResultMapper, S
         if (scoringResultQueryRequest == null) {
             return queryWrapper;
         }
-        // todo 从对象中取值
+        // 从对象中取值
         Long id = scoringResultQueryRequest.getId();
+        String resultName = scoringResultQueryRequest.getResultName();
+        String resultDesc = scoringResultQueryRequest.getResultDesc();
+        String resultPicture = scoringResultQueryRequest.getResultPicture();
+        String resultProp = scoringResultQueryRequest.getResultProp();
+        Integer resultScoreRange = scoringResultQueryRequest.getResultScoreRange();
+        Long appId = scoringResultQueryRequest.getAppId();
+        Long userId = scoringResultQueryRequest.getUserId();
         Long notId = scoringResultQueryRequest.getNotId();
-        String title = scoringResultQueryRequest.getTitle();
-        String content = scoringResultQueryRequest.getContent();
         String searchText = scoringResultQueryRequest.getSearchText();
         String sortField = scoringResultQueryRequest.getSortField();
         String sortOrder = scoringResultQueryRequest.getSortOrder();
-        List<String> tagList = scoringResultQueryRequest.getTags();
-        Long userId = scoringResultQueryRequest.getUserId();
-        // todo 补充需要的查询条件
+
+        // 补充需要的查询条件
         // 从多字段中搜索
         if (StringUtils.isNotBlank(searchText)) {
             // 需要拼接查询条件
-            queryWrapper.and(qw -> qw.like("title", searchText).or().like("content", searchText));
+            queryWrapper.and(qw -> qw.like("resultName", searchText).or().like("resultDesc", searchText));
         }
         // 模糊查询
-        queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
-        queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
-        // JSON 数组查询
-        if (CollUtil.isNotEmpty(tagList)) {
-            for (String tag : tagList) {
-                queryWrapper.like("tags", "\"" + tag + "\"");
-            }
-        }
+        queryWrapper.like(StringUtils.isNotBlank(resultName), "resultName", resultName);
+        queryWrapper.like(StringUtils.isNotBlank(resultDesc), "resultDesc", resultDesc);
+        queryWrapper.like(StringUtils.isNotBlank(resultProp), "resultProp", resultProp);
         // 精确查询
         queryWrapper.ne(ObjectUtils.isNotEmpty(notId), "id", notId);
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(appId), "appId", appId);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(resultScoreRange), "resultScoreRange", resultScoreRange);
+        queryWrapper.eq(StringUtils.isNotBlank(resultPicture), "resultPicture", resultPicture);
         // 排序规则
         queryWrapper.orderBy(SqlUtils.validSortField(sortField),
                 sortOrder.equals(CommonConstant.SORT_ORDER_ASC),

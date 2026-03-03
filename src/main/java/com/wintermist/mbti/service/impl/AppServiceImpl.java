@@ -53,34 +53,40 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
         if (appQueryRequest == null) {
             return queryWrapper;
         }
-        // todo 从对象中取值
+        // 从对象中取值
         Long id = appQueryRequest.getId();
+        String appName = appQueryRequest.getAppName();
+        String appDesc = appQueryRequest.getAppDesc();
+        String appIcon = appQueryRequest.getAppIcon();
+        Integer appType = appQueryRequest.getAppType();
+        Integer scoringStrategy = appQueryRequest.getScoringStrategy();
+        Integer reviewStatus = appQueryRequest.getReviewStatus();
+        String reviewMessage = appQueryRequest.getReviewMessage();
+        Long reviewerId = appQueryRequest.getReviewerId();
+        Long userId = appQueryRequest.getUserId();
         Long notId = appQueryRequest.getNotId();
-        String title = appQueryRequest.getTitle();
-        String content = appQueryRequest.getContent();
         String searchText = appQueryRequest.getSearchText();
         String sortField = appQueryRequest.getSortField();
         String sortOrder = appQueryRequest.getSortOrder();
-        List<String> tagList = appQueryRequest.getTags();
-        Long userId = appQueryRequest.getUserId();
-        // todo 补充需要的查询条件
+
+        // 补充需要的查询条件
         // 从多字段中搜索
         if (StringUtils.isNotBlank(searchText)) {
             // 需要拼接查询条件
-            queryWrapper.and(qw -> qw.like("title", searchText).or().like("content", searchText));
+            queryWrapper.and(qw -> qw.like("appName", searchText).or().like("appDesc", searchText));
         }
         // 模糊查询
-        queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
-        queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
-        // JSON 数组查询
-        if (CollUtil.isNotEmpty(tagList)) {
-            for (String tag : tagList) {
-                queryWrapper.like("tags", "\"" + tag + "\"");
-            }
-        }
+        queryWrapper.like(StringUtils.isNotBlank(appName), "appName", appName);
+        queryWrapper.like(StringUtils.isNotBlank(appDesc), "appDesc", appDesc);
+        queryWrapper.like(StringUtils.isNotBlank(reviewMessage), "reviewMessage", reviewMessage);
         // 精确查询
+        queryWrapper.eq(StringUtils.isNotBlank(appIcon), "appIcon", appIcon);
         queryWrapper.ne(ObjectUtils.isNotEmpty(notId), "id", notId);
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(appType), "appType", appType);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(scoringStrategy), "scoringStrategy", scoringStrategy);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(reviewStatus), "reviewStatus", reviewStatus);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(reviewerId), "reviewerId", reviewerId);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
         // 排序规则
         queryWrapper.orderBy(SqlUtils.validSortField(sortField),

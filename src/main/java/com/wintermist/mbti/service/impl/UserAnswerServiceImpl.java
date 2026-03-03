@@ -53,35 +53,43 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
         if (userAnswerQueryRequest == null) {
             return queryWrapper;
         }
-        // todo 从对象中取值
+        // 从对象中取值
         Long id = userAnswerQueryRequest.getId();
+        Long appId = userAnswerQueryRequest.getAppId();
+        Integer appType = userAnswerQueryRequest.getAppType();
+        Integer scoringStrategy = userAnswerQueryRequest.getScoringStrategy();
+        String choices = userAnswerQueryRequest.getChoices();
+        Long resultId = userAnswerQueryRequest.getResultId();
+        String resultName = userAnswerQueryRequest.getResultName();
+        String resultDesc = userAnswerQueryRequest.getResultDesc();
+        String resultPicture = userAnswerQueryRequest.getResultPicture();
+        Integer resultScore = userAnswerQueryRequest.getResultScore();
+        Long userId = userAnswerQueryRequest.getUserId();
         Long notId = userAnswerQueryRequest.getNotId();
-        String title = userAnswerQueryRequest.getTitle();
-        String content = userAnswerQueryRequest.getContent();
         String searchText = userAnswerQueryRequest.getSearchText();
         String sortField = userAnswerQueryRequest.getSortField();
         String sortOrder = userAnswerQueryRequest.getSortOrder();
-        List<String> tagList = userAnswerQueryRequest.getTags();
-        Long userId = userAnswerQueryRequest.getUserId();
-        // todo 补充需要的查询条件
+
+        // 补充需要的查询条件
         // 从多字段中搜索
         if (StringUtils.isNotBlank(searchText)) {
             // 需要拼接查询条件
-            queryWrapper.and(qw -> qw.like("title", searchText).or().like("content", searchText));
+            queryWrapper.and(qw -> qw.like("resultName", searchText).or().like("resultDesc", searchText));
         }
         // 模糊查询
-        queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
-        queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
-        // JSON 数组查询
-        if (CollUtil.isNotEmpty(tagList)) {
-            for (String tag : tagList) {
-                queryWrapper.like("tags", "\"" + tag + "\"");
-            }
-        }
+        queryWrapper.like(StringUtils.isNotBlank(choices), "choices", choices);
+        queryWrapper.like(StringUtils.isNotBlank(resultName), "resultName", resultName);
+        queryWrapper.like(StringUtils.isNotBlank(resultDesc), "resultDesc", resultDesc);
+        queryWrapper.like(StringUtils.isNotBlank(resultPicture), "resultPicture", resultPicture);
         // 精确查询
         queryWrapper.ne(ObjectUtils.isNotEmpty(notId), "id", notId);
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(resultId), "resultId", resultId);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(appId), "appId", appId);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(appType), "appType", appType);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(resultScore), "resultScore", resultScore);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(scoringStrategy), "scoringStrategy", scoringStrategy);
         // 排序规则
         queryWrapper.orderBy(SqlUtils.validSortField(sortField),
                 sortOrder.equals(CommonConstant.SORT_ORDER_ASC),

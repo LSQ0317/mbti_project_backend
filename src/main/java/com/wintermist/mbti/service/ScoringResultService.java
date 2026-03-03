@@ -1,13 +1,44 @@
 package com.wintermist.mbti.service;
 
-import com.wintermist.mbti.model.entity.ScoringResult;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wintermist.mbti.model.dto.scoringResult.ScoringResultQueryRequest;
+import com.wintermist.mbti.model.entity.ScoringResult;
+import com.wintermist.mbti.model.vo.ScoringResultVO;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
-* @author wintermist
-* @description 针对表【scoring_result(评分结果)】的数据库操作Service
-* @createDate 2026-03-03 15:13:31
-*/
+ * 得分服务
+ *
+
+ */
 public interface ScoringResultService extends IService<ScoringResult> {
 
+    /**
+     * 获取查询条件
+     *
+     * @param scoringResultQueryRequest
+     * @return
+     */
+    QueryWrapper<ScoringResult> getQueryWrapper(ScoringResultQueryRequest scoringResultQueryRequest);
+    
+    /**
+     * 获取得分封装
+     *
+     * @param scoringResult
+     * @param request
+     * @return
+     */
+    ScoringResultVO getScoringResultVO(ScoringResult scoringResult, HttpServletRequest request);
+
+    /**
+     * 分页获取得分封装
+     *
+     * @param scoringResultPage
+     * @param request
+     * @return
+     */
+    Page<ScoringResultVO> getScoringResultVOPage(Page<ScoringResult> scoringResultPage, HttpServletRequest request);
 }

@@ -9,10 +9,12 @@ import com.wintermist.mbti.constant.CommonConstant;
 import com.wintermist.mbti.exception.ThrowUtils;
 import com.wintermist.mbti.mapper.QuestionMapper;
 import com.wintermist.mbti.model.dto.question.QuestionQueryRequest;
+import com.wintermist.mbti.model.entity.App;
 import com.wintermist.mbti.model.entity.Question;
 import com.wintermist.mbti.model.entity.User;
 import com.wintermist.mbti.model.vo.QuestionVO;
 import com.wintermist.mbti.model.vo.UserVO;
+import com.wintermist.mbti.service.AppService;
 import com.wintermist.mbti.service.QuestionService;
 import com.wintermist.mbti.service.UserService;
 import com.wintermist.mbti.utils.SqlUtils;
@@ -40,6 +42,26 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private AppService appService;
+
+    @Override
+    public void validQuestion(Question question, boolean add) {
+        ThrowUtils.throwIf(question == null, ErrorCode.PARAMS_ERROR);
+        String questionContent = question.getQuestionContent();
+        Long appId = question.getAppId();
+        // 创建时，所有参数必须非空
+        if (add) {
+            ThrowUtils.throwIf(StringUtils.isBlank(questionContent), ErrorCode.PARAMS_ERROR);
+            ThrowUtils.throwIf(appId == null || appId <= 0, ErrorCode.PARAMS_ERROR);
+        }
+        // 修改时，有值才校验
+        if (appId != null) {
+            App app = appService.getById(appId);
+            ThrowUtils.throwIf(app == null, ErrorCode.PARAMS_ERROR, "应用不存在");
+        }
+    }
 
     /**
      * 获取查询条件

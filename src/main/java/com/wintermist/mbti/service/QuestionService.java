@@ -16,6 +16,13 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface QuestionService extends IService<Question> {
 
+    /**
+     * 校验问题
+     *
+     * @param question
+     * @param add
+     */
+    void validQuestion(Question question, boolean add);
 
     /**
      * 获取查询条件

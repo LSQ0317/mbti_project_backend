@@ -17,6 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 public interface UserAnswerService extends IService<UserAnswer> {
 
     /**
+     * 校验用户答案
+     *
+     * @param userAnswer
+     * @param add
+     */
+    void validUserAnswer(UserAnswer userAnswer, boolean add);
+
+    /**
      * 获取查询条件
      *
      * @param userAnswerQueryRequest

@@ -17,6 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 public interface ScoringResultService extends IService<ScoringResult> {
 
     /**
+     * 校验评分结果
+     *
+     * @param scoringResult
+     * @param add
+     */
+    void validScoringResult(ScoringResult scoringResult, boolean add);
+
+    /**
      * 获取查询条件
      *
      * @param scoringResultQueryRequest

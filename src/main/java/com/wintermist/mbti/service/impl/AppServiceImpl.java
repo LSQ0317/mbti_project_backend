@@ -6,11 +6,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wintermist.mbti.common.ErrorCode;
 import com.wintermist.mbti.constant.CommonConstant;
+import com.wintermist.mbti.exception.BusinessException;
 import com.wintermist.mbti.exception.ThrowUtils;
 import com.wintermist.mbti.mapper.AppMapper;
 import com.wintermist.mbti.model.dto.app.AppQueryRequest;
 import com.wintermist.mbti.model.entity.App;
 import com.wintermist.mbti.model.entity.User;
+import com.wintermist.mbti.model.enums.AppScoringStrategyEnum;
+import com.wintermist.mbti.model.enums.AppTypeEnum;
 import com.wintermist.mbti.model.vo.AppVO;
 import com.wintermist.mbti.model.vo.UserVO;
 import com.wintermist.mbti.service.AppService;
@@ -40,6 +43,46 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
 
     @Resource
     private UserService userService;
+
+    @Override
+    public void validApp(App app, boolean add) {
+        if (app == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        String appName = app.getAppName();
+        String appDesc = app.getAppDesc();
+        Integer appType = app.getAppType();
+        Integer scoringStrategy = app.getScoringStrategy();
+
+        // 创建时，所有参数必须非空
+        if (add) {
+            if (StringUtils.isAnyBlank(appName, appDesc)) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR);
+            }
+            if (appType == null || scoringStrategy == null) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR);
+            }
+        }
+        // 修改时，有值才校验
+        if (StringUtils.isNotBlank(appName) && appName.length() > 80) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "应用名称过长");
+        }
+        if (StringUtils.isNotBlank(appDesc) && appDesc.length() > 256) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "应用描述过长");
+        }
+        if (appType != null) {
+            AppTypeEnum appTypeEnum = AppTypeEnum.getEnumByValue(appType);
+            if (appTypeEnum == null) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "应用类别非法");
+            }
+        }
+        if (scoringStrategy != null) {
+            AppScoringStrategyEnum scoringStrategyEnum = AppScoringStrategyEnum.getEnumByValue(scoringStrategy);
+            if (scoringStrategyEnum == null) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "评分策略非法");
+            }
+        }
+    }
 
     /**
      * 获取查询条件

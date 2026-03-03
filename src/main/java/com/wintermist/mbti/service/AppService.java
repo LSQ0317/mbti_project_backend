@@ -17,6 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 public interface AppService extends IService<App> {
 
     /**
+     * 校验应用
+     *
+     * @param app
+     * @param add
+     */
+    void validApp(App app, boolean add);
+
+    /**
      * 获取查询条件
      *
      * @param appQueryRequest

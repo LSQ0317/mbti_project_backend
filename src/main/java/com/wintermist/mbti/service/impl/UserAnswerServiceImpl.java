@@ -9,10 +9,12 @@ import com.wintermist.mbti.constant.CommonConstant;
 import com.wintermist.mbti.exception.ThrowUtils;
 import com.wintermist.mbti.mapper.UserAnswerMapper;
 import com.wintermist.mbti.model.dto.userAnswer.UserAnswerQueryRequest;
-import com.wintermist.mbti.model.entity.UserAnswer;
+import com.wintermist.mbti.model.entity.App;
 import com.wintermist.mbti.model.entity.User;
+import com.wintermist.mbti.model.entity.UserAnswer;
 import com.wintermist.mbti.model.vo.UserAnswerVO;
 import com.wintermist.mbti.model.vo.UserVO;
+import com.wintermist.mbti.service.AppService;
 import com.wintermist.mbti.service.UserAnswerService;
 import com.wintermist.mbti.service.UserService;
 import com.wintermist.mbti.utils.SqlUtils;
@@ -40,6 +42,23 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private AppService appService;
+
+    @Override
+    public void validUserAnswer(UserAnswer userAnswer, boolean add) {
+        ThrowUtils.throwIf(userAnswer == null, ErrorCode.PARAMS_ERROR);
+        Long appId = userAnswer.getAppId();
+        // 创建时，所有参数必须非空
+        if (add) {
+            ThrowUtils.throwIf(appId == null || appId <= 0, ErrorCode.PARAMS_ERROR, "appId 非法");
+        }
+        if (appId != null) {
+            App app = appService.getById(appId);
+            ThrowUtils.throwIf(app == null, ErrorCode.PARAMS_ERROR, "应用不存在");
+        }
+    }
 
     /**
      * 获取查询条件

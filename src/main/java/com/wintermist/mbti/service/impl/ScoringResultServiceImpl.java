@@ -6,13 +6,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wintermist.mbti.common.ErrorCode;
 import com.wintermist.mbti.constant.CommonConstant;
+import com.wintermist.mbti.exception.BusinessException;
 import com.wintermist.mbti.exception.ThrowUtils;
 import com.wintermist.mbti.mapper.ScoringResultMapper;
 import com.wintermist.mbti.model.dto.scoringResult.ScoringResultQueryRequest;
+import com.wintermist.mbti.model.entity.App;
 import com.wintermist.mbti.model.entity.ScoringResult;
 import com.wintermist.mbti.model.entity.User;
 import com.wintermist.mbti.model.vo.ScoringResultVO;
 import com.wintermist.mbti.model.vo.UserVO;
+import com.wintermist.mbti.service.AppService;
 import com.wintermist.mbti.service.ScoringResultService;
 import com.wintermist.mbti.service.UserService;
 import com.wintermist.mbti.utils.SqlUtils;
@@ -40,6 +43,29 @@ public class ScoringResultServiceImpl extends ServiceImpl<ScoringResultMapper, S
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private AppService appService;
+
+    @Override
+    public void validScoringResult(ScoringResult scoringResult, boolean add) {
+        ThrowUtils.throwIf(scoringResult == null, ErrorCode.PARAMS_ERROR);
+        String resultName = scoringResult.getResultName();
+        Long appId = scoringResult.getAppId();
+        // 创建时，所有参数必须非空
+        if (add) {
+            ThrowUtils.throwIf(StringUtils.isBlank(resultName), ErrorCode.PARAMS_ERROR);
+            ThrowUtils.throwIf(appId == null || appId <= 0, ErrorCode.PARAMS_ERROR);
+        }
+        // 修改时，有值才校验
+        if (StringUtils.isNotBlank(resultName) && resultName.length() > 128) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "结果名称过长");
+        }
+        if (appId != null) {
+            App app = appService.getById(appId);
+            ThrowUtils.throwIf(app == null, ErrorCode.PARAMS_ERROR, "应用不存在");
+        }
+    }
 
     /**
      * 获取查询条件

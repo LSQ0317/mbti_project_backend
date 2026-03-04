@@ -108,11 +108,11 @@
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.zhipu.oapi/zhipuai-sdk-core-v4 -->
-        <dependency>
-            <groupId>com.zhipu.oapi</groupId>
-            <artifactId>zhipuai-sdk-core-v4</artifactId>
-            <version>4.2.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.zhipu.oapi</groupId>-->
+<!--            <artifactId>zhipuai-sdk-core-v4</artifactId>-->
+<!--            <version>4.2.0</version>-->
+<!--        </dependency>-->
         <!-- https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava -->
         <dependency>
             <groupId>io.reactivex.rxjava2</groupId>

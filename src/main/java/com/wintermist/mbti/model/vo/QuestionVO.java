@@ -1,6 +1,8 @@
 package com.wintermist.mbti.model.vo;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import com.wintermist.mbti.model.dto.question.QuestionContentDTO;
 import com.wintermist.mbti.model.entity.Question;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
@@ -30,7 +32,7 @@ public class QuestionVO implements Serializable {
     /**
      * 内容
      */
-    private String content;
+    private List<QuestionContentDTO> questionContent;
 
     /**
      * 创建用户 id
@@ -70,6 +72,9 @@ public class QuestionVO implements Serializable {
         Question question = new Question();
         BeanUtils.copyProperties(questionVO, question);
         List<String> tagList = questionVO.getTagList();
+        if (questionVO.getQuestionContent() != null) {
+            question.setQuestionContent(JSONUtil.toJsonStr(questionVO.getQuestionContent()));
+        }
         return question;
     }
 
@@ -85,6 +90,10 @@ public class QuestionVO implements Serializable {
         }
         QuestionVO questionVO = new QuestionVO();
         BeanUtils.copyProperties(question, questionVO);
+        String questionContent = question.getQuestionContent();
+        if (StrUtil.isNotBlank(questionContent)) {
+            questionVO.setQuestionContent(JSONUtil.toList(questionContent, QuestionContentDTO.class));
+        }
         return questionVO;
     }
 }

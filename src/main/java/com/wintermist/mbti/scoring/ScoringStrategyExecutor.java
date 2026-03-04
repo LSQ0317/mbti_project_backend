@@ -5,13 +5,12 @@ import com.wintermist.mbti.exception.BusinessException;
 import com.wintermist.mbti.exception.ThrowUtils;
 import com.wintermist.mbti.model.entity.App;
 import com.wintermist.mbti.model.entity.UserAnswer;
+import org.springframework.aop.support.AopUtils;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 评分策略执行器
@@ -37,11 +36,10 @@ public class ScoringStrategyExecutor {
 
         // 根据注解获取具体的评分实现
         for (ScoringStrategy strategy : scoringStrategyList) {
-            if(strategy.getClass().isAnnotationPresent(ScoringStrategyConfig.class)){
-                ScoringStrategyConfig annotation = strategy.getClass().getAnnotation(ScoringStrategyConfig.class);
-                if (annotation.appType() == appType && annotation.scoringStrategy() == scoringStrategy) {
-                    return strategy.doScore(choices, app);
-                }
+            Class<?> targetClass = AopUtils.getTargetClass(strategy);
+            ScoringStrategyConfig annotation = AnnotationUtils.findAnnotation(targetClass, ScoringStrategyConfig.class);
+            if (annotation != null && annotation.appType().getValue() == appType && annotation.scoringStrategy().getValue() == scoringStrategy) {
+                return strategy.doScore(choices, app);
             }
         }
         throw new BusinessException(ErrorCode.SYSTEM_ERROR, "未找到对应的评分策略实现");

@@ -7,8 +7,11 @@ import com.wintermist.mbti.model.entity.Question;
 import com.wintermist.mbti.model.entity.ScoringResult;
 import com.wintermist.mbti.model.entity.UserAnswer;
 import com.wintermist.mbti.model.dto.question.QuestionContentDTO;
+import com.wintermist.mbti.model.enums.AppScoringStrategyEnum;
+import com.wintermist.mbti.model.enums.AppTypeEnum;
 import com.wintermist.mbti.service.QuestionService;
 import com.wintermist.mbti.service.ScoringResultService;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -20,7 +23,11 @@ import java.util.Objects;
  * 总得分 > 60 < 80 良好
  * > 80 优秀
  */
-@ScoringStrategyConfig(appType = 0, scoringStrategy = 0)
+@Service
+@ScoringStrategyConfig(
+        appType = AppTypeEnum.SCORE_CLASSIFICATION,
+        scoringStrategy = AppScoringStrategyEnum.CUSTOM_SCORING
+)
 public class CustomerScoreScoringStrategy implements ScoringStrategy{
 
     @Resource

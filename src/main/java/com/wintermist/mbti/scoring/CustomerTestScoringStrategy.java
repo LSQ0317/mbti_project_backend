@@ -8,8 +8,11 @@ import com.wintermist.mbti.model.entity.App;
 import com.wintermist.mbti.model.entity.Question;
 import com.wintermist.mbti.model.entity.ScoringResult;
 import com.wintermist.mbti.model.entity.UserAnswer;
+import com.wintermist.mbti.model.enums.AppScoringStrategyEnum;
+import com.wintermist.mbti.model.enums.AppTypeEnum;
 import com.wintermist.mbti.service.QuestionService;
 import com.wintermist.mbti.service.ScoringResultService;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -19,7 +22,11 @@ import java.util.Map;
 /**
  * 自定义测评类评分
  */
-@ScoringStrategyConfig(appType = 1, scoringStrategy = 0)
+@Service
+@ScoringStrategyConfig(
+        appType = AppTypeEnum.ASSESSMENT_CLASSIFICATION,
+        scoringStrategy = AppScoringStrategyEnum.CUSTOM_SCORING
+)
 public class CustomerTestScoringStrategy implements ScoringStrategy{
 
     @Resource
